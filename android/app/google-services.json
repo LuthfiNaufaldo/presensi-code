@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "384598659619",
+    "project_id": "presence-qrcode12",
+    "storage_bucket": "presence-qrcode12.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:384598659619:android:de47b2c0a7e3f174315796",
+        "android_client_info": {
+          "package_name": "com.ekteknikkomputer.presensi_polsri"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "384598659619-kmpie5mg1q5khc172o0gef8iv72223m1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCCs-YcfZwpyKjLgIP54WjsoXqlis4bosY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "384598659619-kmpie5mg1q5khc172o0gef8iv72223m1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
