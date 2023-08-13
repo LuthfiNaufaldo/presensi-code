@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
+import 'package:presensi_polsri/app/data/models/presensi_models.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:presensi_polsri/app/routes/app_pages.dart';
@@ -62,7 +62,7 @@ class AllPresensiView extends GetView<AllPresensiController> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    "Masuk",
+                                    data["status"],
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -75,19 +75,14 @@ class AllPresensiView extends GetView<AllPresensiController> {
                                   ),
                                 ],
                               ),
-                              Text(data['masuk']?['date'] == null
-                                  ? "-"
-                                  : "${DateFormat.jms().format(DateTime.parse(data['masuk']!['date']))}"),
                               SizedBox(height: 10),
                               Text(
-                                "Keluar",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                data['matkul'] == null ? "-" : data['matkul'],
                               ),
-                              Text(data['keluar']?['date'] == null
+                              Text(data['date'] == null
                                   ? "-"
-                                  : "${DateFormat.jms().format(DateTime.parse(data['keluar']!['date']))}"),
+                                  : "${DateFormat.jms().format(DateTime.parse(data['date']))}"),
+                              SizedBox(height: 10),
                             ],
                           ),
                         ),

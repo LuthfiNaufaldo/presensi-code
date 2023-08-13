@@ -142,29 +142,35 @@ class HomeView extends GetView<HomeController> {
                         return Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            Column(
-                              children: [
-                                Text("Masuk"),
-                                SizedBox(height: 5),
-                                Text(dataToday?["masuk"] == null
-                                    ? "-"
-                                    : "${DateFormat.jms().format(DateTime.parse(dataToday!['masuk']['date']))}"),
-                              ],
-                            ),
-                            Container(
-                              width: 2,
-                              height: 20,
-                              color: Colors.grey,
-                            ),
-                            Column(
-                              children: [
-                                Text("Keluar"),
-                                SizedBox(height: 5),
-                                Text(dataToday?["keluar"] == null
-                                    ? "-"
-                                    : "${DateFormat.jms().format(DateTime.parse(dataToday!['masuk']['date']))}"),
-                              ],
-                            ),
+                            Text(
+                              "Presensi Mata Kuliah POLSRI",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            )
+                            // Column(
+                            //   children: [
+                            //     Text("Masuk"),
+                            //     SizedBox(height: 5),
+                            //     Text(dataToday?["masuk"] == null
+                            //         ? "-"
+                            //         : "${DateFormat.jms().format(DateTime.parse(dataToday!['masuk']['date']))}"),
+                            //   ],
+                            // ),
+                            // Container(
+                            //   width: 2,
+                            //   height: 20,
+                            //   color: Colors.grey,
+                            // ),
+                            // Column(
+                            //   children: [
+                            //     Text("Keluar"),
+                            //     SizedBox(height: 5),
+                            //     Text(dataToday?["keluar"] == null
+                            //         ? "-"
+                            //         : "${DateFormat.jms().format(DateTime.parse(dataToday!['masuk']['date']))}"),
+                            //   ],
+                            // ),
                           ],
                         );
                       }),
@@ -178,105 +184,105 @@ class HomeView extends GetView<HomeController> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      "Last 5 Days",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
+                    if (user["role"] == "Mahasiswa")
+                      Text(
+                        "Last 5 Days",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
                       ),
-                    ),
-                    TextButton(
-                        onPressed: () => Get.toNamed(Routes.ALL_PRESENSI),
-                        child: Text("See More")),
+                    if (user["role"] == "Mahasiswa")
+                      TextButton(
+                          onPressed: () => Get.toNamed(Routes.ALL_PRESENSI),
+                          child: Text("See More")),
                   ],
                 ),
                 SizedBox(height: 10),
-                StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                    stream: controller.streamLastPresensi(),
-                    builder: (context, snapPresensi) {
-                      if (snapPresensi.connectionState ==
-                          ConnectionState.waiting) {
-                        return Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }
-                      if (snapPresensi.data?.docs.length == 0 ||
-                          snapPresensi.data == null) {
-                        return SizedBox(
-                          height: 150,
-                          child: Center(
-                            child: Text("Belum ada history presensi."),
-                          ),
-                        );
-                      }
-                      return ListView.builder(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        itemCount: snapPresensi.data!.docs.length,
-                        itemBuilder: (context, index) {
-                          Map<String, dynamic> data =
-                              snapPresensi.data!.docs[index].data();
+                if (user["role"] == "Mahasiswa")
+                  StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                      stream: controller.streamLastPresensi(),
+                      builder: (context, snapPresensi) {
+                        if (snapPresensi.connectionState ==
+                            ConnectionState.waiting) {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                        if (snapPresensi.data?.docs.length == 0 ||
+                            snapPresensi.data == null) {
+                          return SizedBox(
+                            height: 150,
+                            child: Center(
+                              child: Text("Belum ada history presensi."),
+                            ),
+                          );
+                        }
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: snapPresensi.data!.docs.length,
+                          itemBuilder: (context, index) {
+                            Map<String, dynamic> data =
+                                snapPresensi.data!.docs[index].data();
 
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 20),
-                            child: Material(
-                              color: Colors.grey[200],
-                              borderRadius: BorderRadius.circular(10),
-                              child: InkWell(
-                                onTap: () => Get.toNamed(
-                                  Routes.DETAIL_PRESENSI,
-                                  arguments: data,
-                                ),
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 20),
+                              child: Material(
+                                color: Colors.grey[200],
                                 borderRadius: BorderRadius.circular(10),
-                                child: Container(
-                                  padding: EdgeInsets.all(20),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
+                                child: InkWell(
+                                  onTap: () => Get.toNamed(
+                                    Routes.DETAIL_PRESENSI,
+                                    arguments: data,
                                   ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            "Masuk",
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Container(
+                                    padding: EdgeInsets.all(20),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              data["status"],
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                             ),
-                                          ),
-                                          Text(
-                                            "${DateFormat.yMMMEd().format(DateTime.parse(data['date']))}",
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
+                                            Text(
+                                              "${DateFormat.yMMMEd().format(DateTime.parse(data['date']))}",
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                      Text(data['masuk']?['date'] == null
-                                          ? "-"
-                                          : "${DateFormat.jms().format(DateTime.parse(data['masuk']!['date']))}"),
-                                      SizedBox(height: 10),
-                                      Text(
-                                        "Keluar",
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
+                                          ],
                                         ),
-                                      ),
-                                      Text(data['keluar']?['date'] == null
-                                          ? "-"
-                                          : "${DateFormat.jms().format(DateTime.parse(data['keluar']!['date']))}"),
-                                    ],
+                                        SizedBox(height: 10),
+                                        Text(
+                                          data['matkul'] == null
+                                              ? "-"
+                                              : data['matkul'],
+                                        ),
+                                        Text(data['date'] == null
+                                            ? "-"
+                                            : "${DateFormat.jms().format(DateTime.parse(data['date']))}"),
+                                        SizedBox(height: 10),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          );
-                        },
-                      );
-                    }),
+                            );
+                          },
+                        );
+                      }),
               ],
             );
           } else {

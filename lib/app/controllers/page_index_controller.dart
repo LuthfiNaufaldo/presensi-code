@@ -7,6 +7,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:presensi_polsri/app/data/models/qrpresensi_models.dart';
 // ignore: unused_import
 import '../modules/qrscan/controllers/qrscan_controller.dart';
 import '../routes/app_pages.dart';
@@ -19,9 +20,9 @@ class PageIndexController extends GetxController {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   Future<String?> getRole() async {
-    // Initialize Firebase
-    FirebaseAuth auth = FirebaseAuth.instance;
-    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    // // Initialize Firebase
+    // FirebaseAuth auth = FirebaseAuth.instance;
+    // FirebaseFirestore firestore = FirebaseFirestore.instance;
 
     String uid = await auth.currentUser!.uid;
 
@@ -55,6 +56,68 @@ class PageIndexController extends GetxController {
     return completer.future; // Return the future from Completer
   }
 
+  Future<List<String>> getListOfDocumentIds(String collectionName) async {
+    try {
+      QuerySnapshot<Map<String, dynamic>> querySnapshot =
+          await FirebaseFirestore.instance.collection(collectionName).get();
+
+      List<String> documentIds = [];
+      querySnapshot.docs.forEach((document) {
+        documentIds.add(document.id);
+      });
+
+      return documentIds;
+    } catch (error) {
+      print("Debug: Error fetching document IDs: $error");
+      return [];
+    }
+  }
+
+  Future<Map<String, dynamic>?> getQRCode(qrcodeID) async {
+    try {
+      DocumentSnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
+          .instance
+          .collection("presensi")
+          .doc(qrcodeID)
+          .get();
+
+      if (snapshot.exists) {
+        Map<String, dynamic> qrcode = snapshot.data()!;
+        // Process qrcode as needed
+        print("Debug: QR code snapshot exists");
+        return qrcode;
+      } else {
+        print("Debug: QR code snapshot does not exist $qrcodeID");
+        return null;
+      }
+    } catch (error) {
+      print("Debug: Error: $error");
+      return null;
+    }
+  }
+
+  void compareStrings(String str1, String str2) {
+    int minLength = str1.length < str2.length ? str1.length : str2.length;
+
+    for (int i = 0; i < minLength; i++) {
+      if (str1[i] != str2[i]) {
+        print("Debug: Difference at position $i: '${str1[i]}' vs '${str2[i]}'");
+      }
+    }
+
+    if (str1.length != str2.length) {
+      print("Debug: Strings have different lengths.");
+    }
+  }
+
+  String removeNonAlphanumeric(String input) {
+    // Regular expression to match non-alphanumeric characters
+    RegExp nonAlphanumeric = RegExp(r'[^a-zA-Z0-9]');
+
+    // Remove non-alphanumeric characters and return the modified string
+    return input.replaceAll(nonAlphanumeric, '');
+  }
+
   void changePage(int i) async {
     switch (i) {
       case 1:
@@ -84,10 +147,21 @@ class PageIndexController extends GetxController {
                 ScanMode.QR,
               );
 
-              //bandingkan barcode
+              barcode = removeNonAlphanumeric(barcode);
 
-              //presensi
-              await presensi(position, address, distance);
+              print("debag: dataQR: $barcode ${barcode.runtimeType}");
+
+              if (barcode != "-1") {
+                print("debug: qr1: $barcode");
+                print("debug: qr2: zSsM339pbebx1CrkjCuR");
+                compareStrings(barcode, "zSsM339pbebx1CrkjCuR");
+                print("debug: dataqr: ${barcode == "zSsM339pbebx1CrkjCuR"}");
+                await isiPresensi(position, address, distance, barcode);
+              } else {
+                Get.snackbar("Batal", "Scan dibatalkan!");
+              }
+
+              // print("debug: ${await getListOfDocumentIds("presensi")}");
             } else {
               Get.snackbar("Terjadi Kesalahan", dataResponse["message"]);
             }
@@ -107,8 +181,56 @@ class PageIndexController extends GetxController {
     }
   }
 
+  Future<void> isiPresensi(
+      Position position, String address, double distance, String dataQR) async {
+    try {
+      String uid = await auth.currentUser!.uid;
+
+      CollectionReference<Map<String, dynamic>> colPresensi =
+          firestore.collection("Mahasiswa").doc(uid).collection("presensi");
+
+      // QuerySnapshot<Map<String, dynamic>> snapPresensi = await colPresensi.get();
+
+      DateTime now = DateTime.now();
+      // String todayDocID = DateFormat.yMd().format(now).replaceAll("/", "-");
+
+      String jangkauan_area = "Di luar Area";
+      if (distance <= 200) {
+        jangkauan_area = "Di dalam area";
+      }
+
+      var qrcode_map = await getQRCode(dataQR);
+      print("Debag: qrcode_map: $qrcode_map ${qrcode_map.runtimeType}");
+      if (qrcode_map != null) {
+        QRPresensiModel qrcode = QRPresensiModel.fromJson(qrcode_map);
+        await colPresensi.doc(dataQR).set({
+          "status": qrcode.status,
+          "date": now.toIso8601String(),
+          "lat": position.latitude,
+          "long": position.longitude,
+          "address": address,
+          "jangkaun_area": jangkauan_area,
+          "matkul": qrcode.matkul,
+          "distance": distance,
+          "presensi_id": dataQR
+        });
+        Get.snackbar(
+            "Berhasil", "kamu telah mengisi daftar hadir (${qrcode.status})");
+      } else {
+        Get.snackbar("Gagal", "Presensi tidak valid!");
+      }
+    } catch (error) {
+      print("Debag: Error: $error");
+      Get.snackbar("Gagal", "Gagal absen: $error");
+    }
+  }
+
   Future<void> presensi(
-      Position position, String address, double distance) async {
+      //ini versi lama
+      Position position,
+      String address,
+      double distance,
+      String dataQR) async {
     String uid = await auth.currentUser!.uid;
 
     CollectionReference<Map<String, dynamic>> colPresensi =
@@ -149,6 +271,7 @@ class PageIndexController extends GetxController {
                     "address": address,
                     "status": status,
                     "distance": distance,
+                    "presensi_id": dataQR
                   },
                 },
               );
@@ -195,6 +318,7 @@ class PageIndexController extends GetxController {
                         "address": address,
                         "status": status,
                         "distance": distance,
+                        "presensi_id": dataQR
                       },
                     },
                   );
@@ -230,6 +354,7 @@ class PageIndexController extends GetxController {
                       "address": address,
                       "status": status,
                       "distance": distance,
+                      "presensi_id": dataQR
                     },
                   },
                 );

@@ -2,7 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
-import 'package:presensi_polsri/app/data/models/presensi_models.dart';
+// import 'package:presensi_polsri/app/data/models/presensi_models.dart';
+import 'package:presensi_polsri/app/data/models/qrpresensi_models.dart';
 import 'package:presensi_polsri/app/routes/app_pages.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import '../controllers/presensi_controller.dart';
@@ -28,15 +29,16 @@ class PresensiView extends GetView<PresensiController> {
               child: Text("No Presensi"),
             );
           }
-          List<PresensiModel> allPresensi = [];
+          List<QRPresensiModel> allPresensi = [];
           for (var element in snapPresensi.data!.docs) {
-            allPresensi.add(PresensiModel.fromJson(element.data()));
+            // print("debug: element: ${element.data()}");
+            allPresensi.add(QRPresensiModel.fromJson(element.data()));
           }
           return ListView.builder(
             itemCount: allPresensi.length,
             padding: EdgeInsets.all(10),
             itemBuilder: (context, index) {
-              PresensiModel presensi = allPresensi[index];
+              QRPresensiModel presensi = allPresensi[index];
               return Card(
                 elevation: 20,
                 margin: EdgeInsets.only(bottom: 20),
@@ -58,17 +60,17 @@ class PresensiView extends GetView<PresensiController> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                presensi.npm,
+                                presensi.presensiId,
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
                               const SizedBox(height: 10),
-                              Text("Nama : ${presensi.name}"),
-                              Text("Kelas : ${presensi.kelas}"),
-                              Text("Mata Kuliah : ${presensi.matkul}"),
-                              Text("Hari : ${presensi.hari}"),
-                              Text("Ket ${presensi.keterangan}"),
+                              Text("Kelas: ${presensi.kelas}"),
+                              Text("Hari: ${presensi.hari}"),
+                              Text("Mata Kuliah: ${presensi.matkul}"),
+                              Text("Status: ${presensi.status}"),
+                              Text("Ket: ${presensi.keterangan}"),
                             ],
                           ),
                         ),
@@ -76,8 +78,7 @@ class PresensiView extends GetView<PresensiController> {
                           height: 100,
                           width: 100,
                           child: QrImageView(
-                            data:
-                                "${presensi.npm}\n${presensi.kelas}\n${presensi.matkul}\n${presensi.hari}",
+                            data: presensi.presensiId,
                             size: 200.0,
                             version: QrVersions.auto,
                           ),

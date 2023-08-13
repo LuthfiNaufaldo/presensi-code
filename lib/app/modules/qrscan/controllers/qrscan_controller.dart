@@ -52,28 +52,6 @@ class QrscanController extends GetxController {
                     ),
                   ),
                 ),
-                // Nama
-                pw.Padding(
-                  padding: const pw.EdgeInsets.all(10),
-                  child: pw.Text(
-                    presensi.name,
-                    textAlign: pw.TextAlign.center,
-                    style: const pw.TextStyle(
-                      fontSize: 10,
-                    ),
-                  ),
-                ),
-                // NPM
-                pw.Padding(
-                  padding: const pw.EdgeInsets.all(10),
-                  child: pw.Text(
-                    presensi.npm,
-                    textAlign: pw.TextAlign.center,
-                    style: const pw.TextStyle(
-                      fontSize: 10,
-                    ),
-                  ),
-                ),
                 // Kelas
                 pw.Padding(
                   padding: const pw.EdgeInsets.all(10),
@@ -89,7 +67,7 @@ class QrscanController extends GetxController {
                 pw.Padding(
                   padding: const pw.EdgeInsets.all(10),
                   child: pw.Text(
-                    presensi.hari,
+                    presensi.date,
                     textAlign: pw.TextAlign.center,
                     style: const pw.TextStyle(
                       fontSize: 10,
@@ -124,7 +102,7 @@ class QrscanController extends GetxController {
                   child: pw.BarcodeWidget(
                     color: PdfColor.fromHex("#000000"),
                     barcode: pw.Barcode.qrCode(),
-                    data: presensi.npm,
+                    data: presensi.presensiId,
                     height: 50,
                     width: 50,
                   ),

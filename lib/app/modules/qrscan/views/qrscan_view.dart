@@ -32,7 +32,7 @@ class QrscanView extends GetView<QrscanController> {
               onTap = () => Get.toNamed(Routes.ADD_PRESENSI);
               break;
             case 1:
-              title = "Detail Presensi";
+              title = "Daftar Presensi";
               icon = Icons.list_alt_outlined;
               onTap = () => Get.toNamed(Routes.PRESENSI);
               break;

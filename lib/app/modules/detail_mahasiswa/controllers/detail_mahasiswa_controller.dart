@@ -9,11 +9,10 @@ class DetailMahasiswaController extends GetxController {
   Future<Map<String, dynamic>> editPresensi(Map<String, dynamic> data) async {
     try {
       await firestore.collection("presensi").doc(data["id"]).update({
-        "name": data["name"],
-        "code": data["npm"],
         "kelas": data["kelas"],
         "hari": data["hari"],
         "matkul": data["matkul"],
+        "status": data["status"],
         "keterangan": data["keterangan"],
       });
       return {

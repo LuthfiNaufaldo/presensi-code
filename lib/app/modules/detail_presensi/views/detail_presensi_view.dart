@@ -8,6 +8,7 @@ import '../controllers/detail_presensi_controller.dart';
 
 class DetailPresensiView extends GetView<DetailPresensiController> {
   final Map<String, dynamic> data = Get.arguments;
+  var presensi = PresensiModel.fromJson(Get.arguments);
   @override
   Widget build(BuildContext context) {
     print(data);
@@ -25,8 +26,7 @@ class DetailPresensiView extends GetView<DetailPresensiController> {
               children: [
                 Center(
                   child: Text(
-                    // "${DateFormat.yMMMMEEEEd().format(DateTime.parse(data['date']))}", //error di sini
-                    PresensiModel.fromJson(data).hari,
+                    "${DateFormat.yMMMMEEEEd().format(DateTime.parse(presensi.date))}", //error di sini
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 17,
@@ -35,63 +35,37 @@ class DetailPresensiView extends GetView<DetailPresensiController> {
                 ),
                 SizedBox(height: 20),
                 Text(
-                  "Masuk",
+                  presensi.matkul,
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
-                Text(data['masuk']?['date'] == null
+                SizedBox(height: 10),
+                Text(
+                  presensi.kelas == null
+                      ? "Kelas : -"
+                      : "Kelas :${presensi.kelas}",
+                ),
+                Text(presensi.date == null
                     ? "Jam : -"
-                    : "Jam : ${DateFormat.jms().format(DateTime.parse(data['masuk']!['date']))}"),
+                    : "Jam : ${DateFormat.jms().format(DateTime.parse(presensi.date))}"),
                 Text(
-                  data['masuk']?['lat'] == null &&
-                          data['masuk']?['long'] == null
+                  presensi.lat == null && presensi.long == null
                       ? "Posisi : -"
-                      : "Posisi : ${data['masuk']!['lat']}, ${data['masuk']!['long']}",
+                      : "Posisi : ${presensi.lat}, ${presensi.long}",
                 ),
                 Text(
-                  data['masuk']?['status'] == null
+                  presensi.status == null
                       ? "Status : -"
-                      : "Status :${data['masuk']!['status']}",
+                      : "Status :${presensi.status}",
                 ),
                 Text(
-                  data['masuk']?['distance'] == null
-                      ? "Distance = -"
-                      : "Distance : ${data['masuk']!['distance'].toString().split(".").first} meter",
+                  presensi.jangkaun_area == null
+                      ? "Jangkauan : -"
+                      : "Jangkauan : ${presensi.jangkaun_area.toString().split(".").first}",
                 ),
                 Text(
-                  data['masuk']?['address'] == null
+                  presensi.address == null
                       ? "Address: -"
-                      : "Address : ${data['masuk']!['address']}",
-                ),
-                SizedBox(height: 20),
-                Text(
-                  "Keluar",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  data['keluar']?['date'] == null
-                      ? "Jam : -"
-                      : "Jam : ${DateFormat.jms().format(DateTime.parse(data['keluar']!['date']))}",
-                ),
-                Text(
-                  data['keluar']?['lat'] == null &&
-                          data['keluar']?['long'] == null
-                      ? "Posisi : -"
-                      : "Posisi : ${data['keluar']!['lat']}, ${data['keluar']!['long']}",
-                ),
-                Text(
-                  data['keluar']?['status'] == null
-                      ? "Status : -"
-                      : "Status :${data['keluar']!['status']}",
-                ),
-                Text(
-                  data['keluar']?['distance'] == null
-                      ? "Distance = -"
-                      : "Distance : ${data['keluar']!['distance'].toString().split(".").first} meter",
-                ),
-                Text(
-                  data['keluar']?['address'] == null
-                      ? "Adress : -"
-                      : "Address : ${data['keluar']!['address']}",
+                      : "Address : ${presensi.address}",
                 ),
                 SizedBox(height: 10),
               ],

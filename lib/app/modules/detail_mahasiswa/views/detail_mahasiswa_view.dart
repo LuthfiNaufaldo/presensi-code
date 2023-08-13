@@ -1,33 +1,52 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
-import 'package:presensi_polsri/app/data/models/presensi_models.dart';
+import 'package:presensi_polsri/app/data/models/qrpresensi_models.dart';
 // ignore: unused_import
 import 'package:qr_flutter/qr_flutter.dart';
 import '../controllers/detail_mahasiswa_controller.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class DetailMahasiswaView extends GetView<DetailMahasiswaController> {
-  final PresensiModel presensi = Get.arguments;
-  final TextEditingController noC = TextEditingController();
-  final TextEditingController nameC = TextEditingController();
-  final TextEditingController npmC = TextEditingController();
+  final QRPresensiModel presensi = Get.arguments as QRPresensiModel;
+  late String selectedStatus;
+  late String selectedMatkul;
+  late DateTime selectedDate;
+
+  // final TextEditingController noC = TextEditingController();
+  // final TextEditingController nameC = TextEditingController();
+  // final TextEditingController npmC = TextEditingController();
   final TextEditingController kelasC = TextEditingController();
-  final TextEditingController hariC = TextEditingController();
-  final TextEditingController matkulC = TextEditingController();
+  // final TextEditingController dateC = TextEditingController();
+  // final TextEditingController matkulC = TextEditingController();
+  // final TextEditingController statusC = TextEditingController();
   final TextEditingController ketC = TextEditingController();
+
+  // List of available matkul options (you can fetch this from a data source)
+  final List<String> availableMatkul = [
+    'Matkul 1',
+    'Matkul 2',
+    'Matkul 3',
+    // Add more options as needed
+  ];
+
+  final List<String> availableStatus = [
+    'Masuk',
+    'Keluar',
+    // Add more options as needed
+  ];
 
   @override
   Widget build(BuildContext context) {
-    nameC.text = presensi.name;
-    npmC.text = presensi.npm;
     kelasC.text = presensi.kelas;
-    hariC.text = presensi.hari;
-    matkulC.text = presensi.matkul;
+    selectedDate = DateTime.parse(presensi.hari);
+    selectedMatkul = presensi.matkul;
+    selectedStatus = presensi.status;
     ketC.text = presensi.keterangan;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Detail Mahasiswa'),
+        title: Text('Edit Presensi'),
         centerTitle: true,
       ),
       body: ListView(
@@ -40,34 +59,12 @@ class DetailMahasiswaView extends GetView<DetailMahasiswaController> {
                 height: 200,
                 width: 200,
                 child: QrImageView(
-                  data:
-                      "${presensi.npm}\n${presensi.kelas}\n${presensi.matkul}\n${presensi.hari}",
+                  data: presensi.presensiId,
                   size: 200.0,
                   version: QrVersions.auto,
                 ),
               ),
             ],
-          ),
-          SizedBox(height: 20),
-          TextField(
-            autocorrect: false,
-            controller: nameC,
-            keyboardType: TextInputType.text,
-            decoration: InputDecoration(
-              labelText: "Nama",
-              border: OutlineInputBorder(),
-            ),
-          ),
-          SizedBox(height: 20),
-          TextField(
-            autocorrect: false,
-            controller: npmC,
-            keyboardType: TextInputType.number,
-            maxLength: 12,
-            decoration: InputDecoration(
-              labelText: "NPM",
-              border: OutlineInputBorder(),
-            ),
           ),
           SizedBox(height: 20),
           TextField(
@@ -80,20 +77,50 @@ class DetailMahasiswaView extends GetView<DetailMahasiswaController> {
             ),
           ),
           SizedBox(height: 20),
-          TextField(
-            autocorrect: false,
-            controller: hariC,
+          SfDateRangePicker(
+            minDate: DateTime.now().subtract(Duration(days: 365)),
+            maxDate: DateTime.now().add(Duration(days: 365)),
+            initialSelectedDate: selectedDate,
+            selectionMode: DateRangePickerSelectionMode.single,
+            onSelectionChanged: (DateRangePickerSelectionChangedArgs args) {
+              // Update the selected date and time
+              selectedDate = args.value;
+            },
+            // You can customize appearance and other properties as needed
+          ),
+          SizedBox(height: 20),
+          DropdownButtonFormField(
+            value: selectedMatkul,
+            onChanged: (newValue) {
+              // Update the selected matkul option
+              selectedMatkul = newValue.toString();
+            },
+            items: availableMatkul.map((matkul) {
+              return DropdownMenuItem(
+                value: matkul,
+                child: Text(matkul),
+              );
+            }).toList(),
             decoration: InputDecoration(
-              labelText: "Hari",
+              labelText: "Mata Kuliah",
               border: OutlineInputBorder(),
             ),
           ),
           SizedBox(height: 20),
-          TextField(
-            autocorrect: false,
-            controller: matkulC,
+          DropdownButtonFormField(
+            value: selectedStatus,
+            onChanged: (newValue) {
+              // Update the selected matkul option
+              selectedStatus = newValue.toString();
+            },
+            items: [selectedStatus].map((status) {
+              return DropdownMenuItem(
+                value: status,
+                child: Text(status),
+              );
+            }).toList(),
             decoration: InputDecoration(
-              labelText: "Mata Kuliah",
+              labelText: "Status Presensi",
               border: OutlineInputBorder(),
             ),
           ),
@@ -110,21 +137,16 @@ class DetailMahasiswaView extends GetView<DetailMahasiswaController> {
           ElevatedButton(
             onPressed: () async {
               if (controller.isLoadingUpdate.isFalse) {
-                if (nameC.text.isNotEmpty &&
-                    npmC.text.isNotEmpty &&
-                    kelasC.text.isNotEmpty &&
-                    hariC.text.isNotEmpty &&
-                    matkulC.text.isNotEmpty &&
+                if (kelasC.text.isNotEmpty &&
+                    selectedStatus.isNotEmpty &&
+                    selectedDate.toString().isNotEmpty &&
                     ketC.text.isNotEmpty) {
-                  // ignore: unused_local_variable
-
                   Map<String, dynamic> hasil = await controller.editPresensi({
                     "id": presensi.presensiId,
-                    "name": nameC.text,
-                    "code": npmC.text,
                     "kelas": kelasC.text,
-                    "hari": hariC.text,
-                    "matkul": matkulC.text,
+                    "hari": selectedDate.toString(),
+                    "matkul": selectedMatkul,
+                    "status": selectedStatus,
                     "keterangan": ketC.text,
                   });
                   Get.back();
