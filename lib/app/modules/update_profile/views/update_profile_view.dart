@@ -23,15 +23,36 @@ class UpdateProfileView extends GetView<UpdateProfileController> {
       body: ListView(
         padding: EdgeInsets.all(20),
         children: [
-          TextField(
-            readOnly: true,
-            autocorrect: false,
-            controller: controller.npmC,
-            decoration: InputDecoration(
-              labelText: "NPM",
-              border: OutlineInputBorder(),
+          if (user["role"] == "Mahasiswa")
+            TextField(
+              readOnly: true,
+              autocorrect: false,
+              controller: controller.npmC,
+              decoration: InputDecoration(
+                labelText: "NPM",
+                border: OutlineInputBorder(),
+              ),
             ),
-          ),
+          if (user["role"] == "Dosen")
+            TextField(
+              readOnly: true,
+              autocorrect: false,
+              controller: controller.npmC,
+              decoration: InputDecoration(
+                labelText: "NIP",
+                border: OutlineInputBorder(),
+              ),
+            ),
+          if (user["role"] == "Admin")
+            TextField(
+              readOnly: true,
+              autocorrect: false,
+              controller: controller.npmC,
+              decoration: InputDecoration(
+                labelText: "NIP",
+                border: OutlineInputBorder(),
+              ),
+            ),
           SizedBox(height: 20),
           Text(
             "Photo Profile",

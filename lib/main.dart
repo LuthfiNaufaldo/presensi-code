@@ -13,6 +13,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
+  // ignore: unused_local_variable
   final pageC = Get.put(PageIndexController(), permanent: true);
 
   runApp(

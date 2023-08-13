@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+// ignore: unused_import
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+// ignore: unused_import
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:presensi_polsri/app/controllers/page_index_controller.dart';
 import 'package:presensi_polsri/app/routes/app_pages.dart';
@@ -11,6 +13,7 @@ import 'package:presensi_polsri/app/routes/app_pages.dart';
 import '../controllers/home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
+  final HomeController controller = Get.put(HomeController());
   final pageC = Get.find<PageIndexController>();
   @override
   Widget build(BuildContext context) {
@@ -33,7 +36,6 @@ class HomeView extends GetView<HomeController> {
               child: CircularProgressIndicator(),
             );
           }
-
           if (snapshot.hasData) {
             Map<String, dynamic> user = snapshot.data!.data()!;
             String defaultImage =

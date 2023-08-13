@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:presensi_polsri/app/data/models/presensi_models.dart';
 
 import '../controllers/detail_presensi_controller.dart';
 
@@ -24,7 +25,8 @@ class DetailPresensiView extends GetView<DetailPresensiController> {
               children: [
                 Center(
                   child: Text(
-                    "${DateFormat.yMMMMEEEEd().format(DateTime.parse(data['date']))}",
+                    // "${DateFormat.yMMMMEEEEd().format(DateTime.parse(data['date']))}", //error di sini
+                    PresensiModel.fromJson(data).hari,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 17,

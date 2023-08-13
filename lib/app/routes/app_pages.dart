@@ -1,5 +1,18 @@
 import 'package:get/get.dart';
 
+import 'package:presensi_polsri/app/modules/add_dosen/bindings/add_dosen_binding.dart';
+import 'package:presensi_polsri/app/modules/add_dosen/views/add_dosen_view.dart';
+import 'package:presensi_polsri/app/modules/add_presensi/bindings/add_presensi_binding.dart';
+import 'package:presensi_polsri/app/modules/add_presensi/views/add_presensi_view.dart';
+import 'package:presensi_polsri/app/modules/detail_mahasiswa/bindings/detail_mahasiswa_binding.dart';
+import 'package:presensi_polsri/app/modules/detail_mahasiswa/views/detail_mahasiswa_view.dart';
+import 'package:presensi_polsri/app/modules/dosenHome/bindings/dosen_home_binding.dart';
+import 'package:presensi_polsri/app/modules/dosenHome/views/dosen_home_view.dart';
+import 'package:presensi_polsri/app/modules/mahasiswaHome/bindings/mahasiswa_home_binding.dart';
+import 'package:presensi_polsri/app/modules/mahasiswaHome/views/mahasiswa_home_view.dart';
+import 'package:presensi_polsri/app/modules/presensi/bindings/presensi_binding.dart';
+import 'package:presensi_polsri/app/modules/presensi/views/presensi_view.dart';
+
 import '../modules/add_mahasiswa/bindings/add_mahasiswa_binding.dart';
 import '../modules/add_mahasiswa/views/add_mahasiswa_view.dart';
 import '../modules/all_presensi/bindings/all_presensi_binding.dart';
@@ -87,6 +100,36 @@ class AppPages {
       name: _Paths.QRSCAN,
       page: () => QrscanView(),
       binding: QrscanBinding(),
+    ),
+    GetPage(
+      name: _Paths.ADD_PRESENSI,
+      page: () => AddPresensiView(),
+      binding: AddPresensiBinding(),
+    ),
+    GetPage(
+      name: _Paths.ADD_DOSEN,
+      page: () => AddDosenView(),
+      binding: AddDosenBinding(),
+    ),
+    GetPage(
+      name: _Paths.DOSEN_HOME,
+      page: () => DosenHomeView(),
+      binding: DosenHomeBinding(),
+    ),
+    GetPage(
+      name: _Paths.MAHASISWA_HOME,
+      page: () => MahasiswaHomeView(),
+      binding: MahasiswaHomeBinding(),
+    ),
+    GetPage(
+      name: _Paths.PRESENSI,
+      page: () => PresensiView(),
+      binding: PresensiBinding(),
+    ),
+    GetPage(
+      name: _Paths.DETAIL_MAHASISWA,
+      page: () => DetailMahasiswaView(),
+      binding: DetailMahasiswaBinding(),
     ),
   ];
 }

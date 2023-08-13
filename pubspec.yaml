@@ -7,20 +7,24 @@ environment:
 
 dependencies:
   cloud_firestore: 4.8.4
+  convex_bottom_bar: 3.2.0
   cupertino_icons: ^1.0.2
   firebase_auth: 4.7.2
-  firebase_core: 2.15.0
+  firebase_core: ^2.15.0
   firebase_storage: 11.2.5
-  get: 4.6.5
-  image_picker: 0.8.4+11
-  convex_bottom_bar: 3.0.0
-  intl: 0.18.1
-  geolocator: 8.2.0
-  geocoding: 2.0.4
-  syncfusion_flutter_datepicker: 19.4.56
-  flutter_barcode_scanner: ^2.0.0
   flutter:
     sdk: flutter
+  flutter_barcode_scanner: ^2.0.0
+  geocoding: 2.0.4
+  geolocator: 8.2.0
+  get: 4.6.5
+  image_picker: 0.8.4+11
+  intl: 0.18.1
+  open_file: ^3.2.1
+  path_provider: ^2.0.11
+  pdf: ^3.3.0
+  qr_flutter: ^4.0.0
+  syncfusion_flutter_datepicker: 19.4.56
 
 flutter_icons:
   android: "launcher_icon"

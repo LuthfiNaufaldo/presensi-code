@@ -1,11 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+// ignore: unused_import
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:presensi_polsri/app/routes/app_pages.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:geocoding/geocoding.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+// ignore: unused_import
+import '../modules/qrscan/controllers/qrscan_controller.dart';
+import '../routes/app_pages.dart';
+import 'dart:async';
 
 class PageIndexController extends GetxController {
   RxInt pageIndex = 0.obs;
@@ -13,29 +18,87 @@ class PageIndexController extends GetxController {
   FirebaseAuth auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
+  Future<String?> getRole() async {
+    // Initialize Firebase
+    FirebaseAuth auth = FirebaseAuth.instance;
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+    String uid = await auth.currentUser!.uid;
+
+    Stream<DocumentSnapshot<Map<String, dynamic>>> userStream =
+        firestore.collection("Mahasiswa").doc(uid).snapshots();
+
+    var role = null;
+
+    var completer = Completer<String?>(); // Use Completer to manage the future
+
+    userStream.listen((snapshot) {
+      if (snapshot.exists) {
+        Map<String, dynamic> userData = snapshot.data()!;
+        // Process userData as needed
+        role = userData["role"];
+        completer.complete(role); // Complete the future when role is obtained
+      } else {
+        role = null;
+        completer.complete(role); // Complete the future even if role is null
+      }
+    }, onError: (error) {
+      role = null;
+      print("Debag: Error: $error");
+      completer.complete(role); // Complete the future in case of error
+    });
+
+    // To stop listening when you're done
+    // subscription.cancel();
+    // No need to cancel the subscription here, as it would prevent the future from completing
+
+    return completer.future; // Return the future from Completer
+  }
+
   void changePage(int i) async {
     switch (i) {
       case 1:
-        Map<String, dynamic> dataResponse = await determinePosition();
-        if (dataResponse["error"] != true) {
-          Position position = dataResponse["position"];
+        try {
+          String? role = await getRole();
+          print("Debag: $role");
 
-          List<Placemark> placemarks = await placemarkFromCoordinates(
-              position.latitude, position.longitude);
-          String address =
-              "${placemarks[0].name}, ${placemarks[0].subLocality},${placemarks[0].locality} ";
-          await updatePosition(position, address);
+          if (role == 'Mahasiswa') {
+            Map<String, dynamic> dataResponse = await determinePosition();
+            if (dataResponse["error"] != true) {
+              Position position = dataResponse["position"];
 
-          //cek distance between 2 position
-          double distance = Geolocator.distanceBetween(
-              -2.98207, 104.73433, position.latitude, position.longitude);
+              List<Placemark> placemarks = await placemarkFromCoordinates(
+                  position.latitude, position.longitude);
+              String address =
+                  "${placemarks[0].name}, ${placemarks[0].subLocality},${placemarks[0].locality} ";
+              await updatePosition(position, address);
 
-          //presensi
-          await presensi(position, address, distance);
-        } else {
-          Get.snackbar("Terjadi Kesalahan", dataResponse["message"]);
+              //cek distance between 2 position
+              double distance = Geolocator.distanceBetween(
+                  -2.98207, 104.73433, position.latitude, position.longitude);
+
+              String barcode = await FlutterBarcodeScanner.scanBarcode(
+                "#000000",
+                "CANCEL",
+                true,
+                ScanMode.QR,
+              );
+
+              //bandingkan barcode
+
+              //presensi
+              await presensi(position, address, distance);
+            } else {
+              Get.snackbar("Terjadi Kesalahan", dataResponse["message"]);
+            }
+          } else if (role == 'Admin' || role == 'Dosen') {
+            Get.offAllNamed(Routes.QRSCAN);
+          }
+        } catch (error) {
+          print("Debag: Error: $error");
         }
         break;
+
       case 2:
         Get.offAllNamed(Routes.PROFILE);
         break;

@@ -22,6 +22,7 @@ class AddMahasiswaController extends GetxController {
       try {
         String emailAdmin = auth.currentUser!.email!;
 
+        // ignore: unused_local_variable
         UserCredential userCredentialAdmin =
             await auth.signInWithEmailAndPassword(
           email: emailAdmin,
@@ -50,6 +51,7 @@ class AddMahasiswaController extends GetxController {
 
           await auth.signOut();
 
+          // ignore: unused_local_variable
           UserCredential userCredentialAdmin =
               await auth.signInWithEmailAndPassword(
             email: emailAdmin,

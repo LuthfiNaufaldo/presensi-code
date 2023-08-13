@@ -14,6 +14,14 @@ abstract class Routes {
   static const DETAIL_PRESENSI = _Paths.DETAIL_PRESENSI;
   static const ALL_PRESENSI = _Paths.ALL_PRESENSI;
   static const QRSCAN = _Paths.QRSCAN;
+  static const ADD_PRESENSI = _Paths.ADD_PRESENSI;
+  static const ADD_DOSEN = _Paths.ADD_DOSEN;
+  static const DOSEN_HOME_VIEW = _Paths.DOSEN_HOME_VIEW;
+  static const MAHASISWA = _Paths.MAHASISWA;
+  static const DOSEN_HOME = _Paths.DOSEN_HOME;
+  static const MAHASISWA_HOME = _Paths.MAHASISWA_HOME;
+  static const PRESENSI = _Paths.PRESENSI;
+  static const DETAIL_MAHASISWA = _Paths.DETAIL_MAHASISWA;
 }
 
 abstract class _Paths {
@@ -29,4 +37,12 @@ abstract class _Paths {
   static const DETAIL_PRESENSI = '/detail-presensi';
   static const ALL_PRESENSI = '/all-presensi';
   static const QRSCAN = '/qrscan';
+  static const ADD_PRESENSI = '/add-presensi';
+  static const ADD_DOSEN = '/add-dosen';
+  static const DOSEN_HOME_VIEW = '/dosen-home-view';
+  static const MAHASISWA = '/mahasiswa';
+  static const DOSEN_HOME = '/dosen-home';
+  static const MAHASISWA_HOME = '/mahasiswa-home';
+  static const PRESENSI = '/presensi';
+  static const DETAIL_MAHASISWA = '/detail-mahasiswa';
 }

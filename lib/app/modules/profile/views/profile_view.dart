@@ -77,21 +77,28 @@ class ProfileView extends GetView<ProfileController> {
                   leading: Icon(Icons.vpn_key),
                   title: Text("Update Password"),
                 ),
-                if (user["role"] == "admin")
+                if (user["role"] == "Admin")
                   ListTile(
                     onTap: () => Get.toNamed(Routes.ADD_MAHASISWA),
                     leading: Icon(Icons.person_add),
                     title: Text("Add Mahasiswa"),
                   ),
+                if (user["role"] == "Admin")
+                  ListTile(
+                    onTap: () => Get.toNamed(Routes.ADD_DOSEN),
+                    leading: Icon(Icons.person_add),
+                    title: Text("Add Dosen"),
+                  ),
+                if (user["role"] == "Dosen")
+                  ListTile(
+                    onTap: () => Get.toNamed(Routes.ADD_PRESENSI),
+                    leading: Icon(Icons.person_add),
+                    title: Text("Add Presensi"),
+                  ),
                 ListTile(
                   onTap: () => controller.logout(),
                   leading: Icon(Icons.logout),
                   title: Text("Logout"),
-                ),
-                ListTile(
-                  onTap: () => Get.toNamed(Routes.QRSCAN),
-                  leading: Icon(Icons.qr_code),
-                  title: Text("QR SCAN"),
                 ),
               ],
             );
@@ -106,7 +113,7 @@ class ProfileView extends GetView<ProfileController> {
         style: TabStyle.fixedCircle,
         items: [
           TabItem(icon: Icons.home, title: 'Home'),
-          TabItem(icon: Icons.qr_code, title: 'Add'),
+          TabItem(icon: Icons.qr_code, title: 'Add Presensi'),
           TabItem(icon: Icons.people, title: 'Profile'),
         ],
         initialActiveIndex: pageC.pageIndex.value,
